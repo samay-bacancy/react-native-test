@@ -40,13 +40,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="nativeui"
-        options={{
-          title: 'Native UI',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="sparkles" color={color} />,
-        }}
-      />
     </Tabs>
   );
 }

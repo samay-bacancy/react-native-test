@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Platform, StyleSheet, TouchableOpacity } from "react-native";
@@ -7,14 +6,19 @@ import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { isLoggedIn } from "@/store";
+import { useAtom } from "jotai";
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useAtom(isLoggedIn);
+  console.log("🚀 ~ HomeScreen ~ isAuthenticated:", isAuthenticated)
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.setItem("isLoggedIn", "false");
-      router.replace("/login");
+      setIsAuthenticated(false);
+      // await AsyncStorage.setItem("isLoggedIn", "false");
+      // router.replace("/login");
     } catch (error) {
       console.error("Error logging out:", error);
     }

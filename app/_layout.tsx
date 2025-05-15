@@ -1,23 +1,25 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { isLoggedIn } from "@/store";
+import { useAtom } from "jotai";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const router = useRouter();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
+  const [isAuthenticated, setIsAuthenticated] = useAtom(isLoggedIn);
 
   useEffect(() => {
     checkAuthStatus();
@@ -25,13 +27,13 @@ export default function RootLayout() {
 
   const checkAuthStatus = async () => {
     try {
-      const value = await AsyncStorage.getItem("isLoggedIn");
-      if (value !== "true") {
-        router.replace("/login");
-      }
+      // const value = await AsyncStorage.getItem("isLoggedIn");
+      // if (isAuthenticated) {
+        // router.replace("/login");
+      // }
     } catch (error) {
       console.error("Error checking auth status:", error);
-      router.replace("/login");
+      // router.replace("/login");
     }
   };
 
@@ -42,8 +44,11 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="login" options={{ headerShown: false }} />
+        {isAuthenticated
+          ? <Stack.Screen name="home" />
+          : <Stack.Screen name="index" options={{ headerShown: false }} />
+        }
+        
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

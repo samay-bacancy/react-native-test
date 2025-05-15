@@ -1,33 +1,17 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Redirect, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { isLoggedIn } from "@/store";
+import { Redirect } from "expo-router";
+import { useAtom } from "jotai";
 
 export default function LoginScreen() {
-  const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
-    try {
-      const value = await AsyncStorage.getItem("isLoggedIn");
-      if (value === "true") {
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error("Error checking auth status:", error);
-    }
-  };
+  const [isAuthenticated, setIsAuthenticated] = useAtom(isLoggedIn);
 
   const handleLogin = async () => {
     try {
-      await AsyncStorage.setItem("isLoggedIn", "true");
+      // await AsyncStorage.setItem("isLoggedIn", "true");
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Error logging in:", error);
@@ -35,7 +19,7 @@ export default function LoginScreen() {
   };
 
   if (isAuthenticated) {
-    return <Redirect href="/(tabs)" />;
+    return <Redirect href="/home" />;
   }
 
   return (
@@ -48,7 +32,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
     </ThemedView>
   );
-}
+} 
 
 const styles = StyleSheet.create({
   container: {
